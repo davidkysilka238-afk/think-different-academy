@@ -15,8 +15,11 @@ komunikaci s REST API a trvalé uložení dat do databáze.
 - **Databáze: SQLite.** Pro fázi, jejímž cílem je ověřit ukládání a čtení dat,
   je souborová databáze vhodnější než samostatně provozovaný databázový server:
   snadno se spustí lokálně i v kontejneru a nevyžaduje další službu. Tabulky a
-  výchozí tým jsou definovány v `schema.sql`; server schéma při spuštění
-  inicializuje.
+  výchozí tým jsou deklarativně definovány v `schema.sql`. Server tento soubor
+  načte a provede při každém spuštění, takže připraví i prázdnou databázi po
+  novém nasazení. Schéma používá `IF NOT EXISTS` a výchozí data `INSERT OR
+  IGNORE`, aby šla inicializace bezpečně zopakovat. Databázi nevytvářím při
+  sestavení Docker image; vytvoří ji aplikace ze stejného schématu při startu.
 - **API: JSON endpointy pod `/api/v1`.** `GET /api/v1/health` ověřuje server,
   `GET /api/v1/team` čte údaje z databáze a
   `POST /api/v1/team/members` přidá člena týmu. Formulář ve webu ověřuje
